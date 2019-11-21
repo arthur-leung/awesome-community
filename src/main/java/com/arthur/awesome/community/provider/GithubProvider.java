@@ -1,7 +1,6 @@
 package com.arthur.awesome.community.provider;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.arthur.awesome.community.dto.AccessTokenDTO;
 import com.arthur.awesome.community.dto.GitHubUserDTO;
 import okhttp3.*;
@@ -42,7 +41,6 @@ public class GithubProvider {
 
         try (Response response = client.newCall(request).execute()) {
             String string = response.body().string();
-            System.out.println(string);
             GitHubUserDTO githubUser = JSON.parseObject(string, GitHubUserDTO.class);
             return githubUser;
         } catch (IOException e) {
