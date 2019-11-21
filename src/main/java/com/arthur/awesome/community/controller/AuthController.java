@@ -49,18 +49,20 @@ public class AuthController {
         final GitHubUserDTO githubUser = githubProvider.getUserInfo(accessToken);
         if (githubUser != null) {
             final String token = UUID.randomUUID().toString();
+            final User user = new User();
+            user.setToken(token);
+            user.setName(githubUser.getName());
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setGmtModified(System.currentTimeMillis());
+            user.setBio(githubUser.getBio());
 
             User existUser = userMapper.findByAccountId(String.valueOf(githubUser.getId()));
             if (existUser == null) {
-                final User user = new User();
-                user.setToken(token);
-                user.setName(githubUser.getName());
-                user.setAccountId(String.valueOf(githubUser.getId()));
-                user.setGmtCreate(System.currentTimeMillis());
-                user.setGmtModified(user.getGmtCreate());
+                user.setGmtCreate(user.getGmtModified());
                 userMapper.insert(user);
             } else {
-                userMapper.updateUserToken(existUser.getId(), token);
+                // TODO 更新用户信息
+                userMapper.updateUserToken(token, System.currentTimeMillis(), existUser.getId());
             }
 
             Cookie cookie = new Cookie("token", token);
