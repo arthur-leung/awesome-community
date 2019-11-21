@@ -40,7 +40,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="#" th:text="消息中心">Action</a></li>
                         <li><a href="#" th:text="个人资料">Another action</a></li>
-                        <li><a href="#" th:text="退出登录">Something else here</a></li>
+                        <li><a th:href="@{logout(uid=${session.user.id})}" href="#" th:text="退出登录">Something else here</a></li>
                     </ul>
                 </li>
             </ul>

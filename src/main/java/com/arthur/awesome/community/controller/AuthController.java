@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -34,7 +36,8 @@ public class AuthController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest req) {
+                           HttpServletRequest req,
+                           HttpServletResponse resq) {
         final AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setState(state);
@@ -45,18 +48,43 @@ public class AuthController {
 
         final GitHubUserDTO githubUser = githubProvider.getUserInfo(accessToken);
         if (githubUser != null) {
-            final User user = new User();
-            user.setToken(UUID.randomUUID().toString());
-            user.setName(githubUser.getName());
-            user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            userMapper.insert(user);
-            // 登录成功 写cookie session
-            req.getSession().setAttribute("user", githubUser);
+            final String token = UUID.randomUUID().toString();
+
+            User existUser = userMapper.findByAccountId(String.valueOf(githubUser.getId()));
+            if (existUser == null) {
+                final User user = new User();
+                user.setToken(token);
+                user.setName(githubUser.getName());
+                user.setAccountId(String.valueOf(githubUser.getId()));
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                userMapper.insert(user);
+            } else {
+                userMapper.updateUserToken(existUser.getId(), token);
+            }
+
+            Cookie cookie = new Cookie("token", token);
+            resq.addCookie(cookie);
             return "redirect:/";
         } else {
             return "redirect:/ ";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(@RequestParam(name = "uid", required = true) int id,
+                         HttpServletRequest req) {
+        User user = userMapper.find(id);
+        Cookie[] cookies = req.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("token")) {
+                String token = cookie.getValue();
+                if (token.equals(user.getToken())) {
+                    userMapper.dropToken(user.getId());
+                    req.getSession().setAttribute("user", null);
+                }
+            }
+        }
+        return "redirect:/";
     }
 }
