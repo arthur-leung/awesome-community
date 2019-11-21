@@ -2,7 +2,7 @@ package com.arthur.awesome.community.dto;
 
 public class GitHubUserDTO {
     private String name;
-    private Long id;
+    private long id;
     private String bio;
 
     public String getName() {
@@ -13,7 +13,7 @@ public class GitHubUserDTO {
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
