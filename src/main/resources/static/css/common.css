@@ -1,0 +1,52 @@
+body{
+    background-color: #efefef !important;
+}
+.container-cus {
+    background-color: #ffffff;
+    max-width: 1500px !important;
+}
+
+.aw-main-content {
+    padding: 0 0 20px;
+    border-right: 1px solid #e6e6e6;
+}
+
+.aw-nav-tabs {
+    position: relative;
+    z-index: 1;
+    min-height: 63px;
+    min-height: 32px\9;
+    margin: 0;
+    padding: 30px 20px 0;
+    border-color: #e6e6e6;
+}
+.aw-nav-tabs.active > li {
+    float: right;
+}
+.aw-nav-tabs > li {
+    margin: 0 4px 0 0;
+    font-size: 14px;
+}
+.aw-nav-tabs h2 {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    margin: 0;
+    font-size: 20px;
+}
+
+.aw-mod-publish {
+    padding: 0 20px 20px;
+}
+.aw-publish-title {
+    position: relative;
+}
+.aw-publish-title input {
+    width: 78%;
+}
+.form-control {
+    padding: 6px;
+    resize: none;
+    box-shadow: none;
+    border-color: #ccc;
+}
