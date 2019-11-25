@@ -52,7 +52,7 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<div class="container-fluid main">
+<div class="container-fluid container-cus main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <h3><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h3>
@@ -73,19 +73,19 @@
                     <a th:href="@{/(sort='no')}" class="red">消灭零回复</a>
                 </li>
             </ul>-->
-            <div class="media">
+            <div class="media" th:each="question : ${questions}">
                 <div class="media-left">
                     <a href="#">
-                        <img class="media-object img-rounded" height="40px" src="https://avatars1.githubusercontent.com/u/54525114?v=4">
+                        <img class="media-object img-rounded" height="40px" src="https://avatars1.githubusercontent.com/u/54525114?v=4" th:src="${question.user.getAvatarUrl()}">
                     </a>
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">
-                        <a>标题</a>
+                        <a th:text="${question.getTitle()}"></a>
                     </h4>
-                    <span class="text-desc"><span th:text="test"></span> 个回复 • <span
-                            th:text="tet"></span> 次浏览 • <span
-                            th:text="111"></span></span>
+                    <span class="text-desc"><span th:text="${question.getCommentCount()}"></span> 个回复 • <span
+                            th:text="${question.getViewCount()}"></span> 次浏览 • <span
+                            th:text="${#dates.format(question.getGmtCreate(),'yyyyMMM/dd HH:mm')}"></span></span>
                 </div>
             </div>
             <!-- <nav aria-label="Page navigation">
