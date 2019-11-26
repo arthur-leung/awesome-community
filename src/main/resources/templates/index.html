@@ -17,6 +17,7 @@
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <h3><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h3>
+            <hr>
             <!--<ul class="nav nav-tabs">
                 <li role="presentation" th:class="${sort == 'new' || sort == '' ? 'active':''}">
                     <a th:href="@{/(sort='new')}">最新</a>
@@ -44,7 +45,7 @@
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">
-                        <a th:text="${question.getTitle()}" href="#"></a>
+                        <a th:href="@{'/question/'+${question.id}}" th:text="${question.getTitle()}" href="#"></a>
                     </h4>
                     <span class="text-desc"><span th:text="${question.getCommentCount()}"></span> 个回复 • <span
                             th:text="${question.getViewCount()}"></span> 次浏览 • <span
@@ -68,8 +69,8 @@
                         <a th:href="@{/(page=${page})}" th:text="${page}"></a>
                     </li>
 
-                    <li th:if="${pagination.showNext}" th:href="@{/(page=${pagination.page + 1})}">
-                        <a aria-label="Previous">
+                    <li th:if="${pagination.showNext}">
+                        <a aria-label="Previous" th:href="@{/(page=${pagination.page + 1})}">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>

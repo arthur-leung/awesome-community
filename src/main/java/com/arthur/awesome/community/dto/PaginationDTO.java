@@ -18,19 +18,13 @@ public class PaginationDTO {
     private List<Integer> pages = new ArrayList<>();
 
     public void setPagination(int totalCount, int page, int pageSize) {
-
         int totalPage;
         if (totalCount % pageSize == 0) {
             totalPage = totalCount / pageSize;
         } else {
             totalPage = totalCount / pageSize + 1;
         }
-        if (page < 1) {
-            page = 1;
-        }
-        if (page > totalPage) {
-            page = totalPage;
-        }
+
         this.page = page;
         this.totalPage = totalPage;
 
@@ -54,13 +48,13 @@ public class PaginationDTO {
         if (page == totalPage) {
             showNext = false;
         } else {
-            showNext = false;
+            showNext = true;
         }
 
         if (pages.contains(1)) {
-            showPrevious = false;
+            showFirst = false;
         } else {
-            showPrevious = true;
+            showFirst = true;
         }
 
         if (pages.contains(totalPage)) {
