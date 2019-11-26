@@ -1,5 +1,6 @@
 package com.arthur.awesome.community.controller;
 
+import com.arthur.awesome.community.dto.PaginationDTO;
 import com.arthur.awesome.community.dto.QuestionDTO;
 import com.arthur.awesome.community.mapper.QuestionMapper;
 import com.arthur.awesome.community.mapper.UserMapper;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +26,10 @@ public class IndexController {
     QuestionService questionService;
 
     @RequestMapping("/")
-    public String index(HttpServletRequest req, Model model) {
+    public String index(HttpServletRequest req,
+                        Model model,
+                        @RequestParam(name = "page", defaultValue = "1") int page,
+                        @RequestParam(name = "size", defaultValue = "5") int pageSize) {
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -39,8 +44,8 @@ public class IndexController {
             }
         }
 
-        List<QuestionDTO> questions = questionService.list();
-        model.addAttribute("questions", questions);
+        PaginationDTO pagination = questionService.list(page, pageSize);
+        model.addAttribute("pagination", pagination);
         return "index";
     }
 }

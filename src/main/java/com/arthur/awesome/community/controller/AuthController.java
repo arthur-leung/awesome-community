@@ -55,7 +55,7 @@ public class AuthController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setGmtModified(System.currentTimeMillis());
             user.setBio(githubUser.getBio());
-            user.setAvatarUrl(githubUser.getAvatar_url());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
 
             User existUser = userMapper.findByAccountId(String.valueOf(githubUser.getId()));
             if (existUser == null) {
