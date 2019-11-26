@@ -21,7 +21,7 @@ public interface UserMapper {
     @Select("select * from user where token = #{token}")
     User findByToken(String token);
 
-    @Select("select * from user where account_id = #{accountId}")
+    @Select("select * from user where account_id = #{accountId} limit 1")
     User findByAccountId(String accountId);
 
     @Update("update user set token = '' where id = #{id}")
@@ -31,5 +31,5 @@ public interface UserMapper {
     void updateUserToken(String token, long gmtModified, int id);
 
     @Update("update user set name = #{name}, account_id = #{accountId}, token = #{token}, gmt_modified=#{gmtModified}, bio=#{bio} where id = #{id}")
-    void updateUser(User user);
+    void update(User user);
 }

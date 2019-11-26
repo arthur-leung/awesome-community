@@ -25,22 +25,24 @@
             <hr>
             <div class="col-md-12" th:text="${question.description}"></div>
             <hr>
-            <span class="glyphicon glyphicon-pencil">
-                <a href="#" th:text="编辑"></a>
-            </span>
+            <a href="#" th:href="@{'/publish/' + ${question.id}}" th:if="${session.user != null && session.user.id == question.creator}">
+                <span class="glyphicon glyphicon-pencil" th:text="编辑">
+                </span>
+            </a>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 profile">
             <div class="col-md-12">
                 <h4>发起人</h4>
                 <div class="media">
                     <div class="media-left">
-                            <img class="media-object img-rounded" height="40px"
-                                 src="https://avatars1.githubusercontent.com/u/54525114?v=4"
-                                 th:src="${question.user.getAvatarUrl()}">
+                        <img class="media-object img-rounded" height="40px"
+                             src="https://avatars1.githubusercontent.com/u/54525114?v=4"
+                             th:src="${question.user.getAvatarUrl()}">
                     </div>
                     <div class="media-body">
                         <h4 class="media-heading">
-                            <a th:href="@{'/question/'+${question.id}}" th:text="${question.user.getName()}" href="#"></a>
+                            <a th:href="@{'/question/'+${question.id}}" th:text="${question.user.getName()}"
+                               href="#"></a>
                         </h4>
                     </div>
                 </div>

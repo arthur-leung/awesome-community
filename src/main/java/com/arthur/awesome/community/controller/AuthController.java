@@ -5,6 +5,7 @@ import com.arthur.awesome.community.dto.GitHubUserDTO;
 import com.arthur.awesome.community.mapper.UserMapper;
 import com.arthur.awesome.community.model.User;
 import com.arthur.awesome.community.provider.GithubProvider;
+import com.arthur.awesome.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,9 @@ public class AuthController {
     private String redirectUri;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     UserMapper userMapper;
 
     @GetMapping("/callback")
@@ -49,6 +53,8 @@ public class AuthController {
         final GitHubUserDTO githubUser = githubProvider.getUserInfo(accessToken);
         if (githubUser != null) {
             final String token = UUID.randomUUID().toString();
+            Cookie cookie = new Cookie("token", token);
+
             final User user = new User();
             user.setToken(token);
             user.setName(githubUser.getName());
@@ -56,17 +62,9 @@ public class AuthController {
             user.setGmtModified(System.currentTimeMillis());
             user.setBio(githubUser.getBio());
             user.setAvatarUrl(githubUser.getAvatarUrl());
+            user.setToken(token);
+            userService.createOrUpdate(user);
 
-            User existUser = userMapper.findByAccountId(String.valueOf(githubUser.getId()));
-            if (existUser == null) {
-                user.setGmtCreate(user.getGmtModified());
-                userMapper.insert(user);
-            } else {
-                // TODO 更新用户信息
-                userMapper.updateUserToken(token, System.currentTimeMillis(), existUser.getId());
-            }
-
-            Cookie cookie = new Cookie("token", token);
             resq.addCookie(cookie);
             return "redirect:/";
         } else {
@@ -75,7 +73,7 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public String logout(@RequestParam(name = "uid", required = true) int id,
+    public String logout(@RequestParam(name = "uid") int id,
                          HttpServletRequest req) {
         User user = userMapper.find(id);
         Cookie[] cookies = req.getCookies();

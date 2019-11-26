@@ -38,7 +38,8 @@
                         <ul class="dropdown-menu">
                             <li><a th:href="@{profile/questions}" href="" th:text="我的问题">Action</a></li>
                             <li><a href="#" th:text="个人资料">Another action</a></li>
-                            <li><a th:href="@{logout(uid=${session.user.id})}" href="#" th:text="退出登录">Something else
+                            <li>
+                            <a th:href="@{logout(uid=${session.user.id})}" href="#" th:text="退出登录">Something else
                                 here</a></li>
                         </ul>
                     </li>
