@@ -4,6 +4,7 @@ import com.arthur.awesome.community.dto.AccessTokenDTO;
 import com.arthur.awesome.community.dto.GitHubUserDTO;
 import com.arthur.awesome.community.mapper.UserMapper;
 import com.arthur.awesome.community.model.User;
+import com.arthur.awesome.community.model.UserExample;
 import com.arthur.awesome.community.provider.GithubProvider;
 import com.arthur.awesome.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,13 +76,16 @@ public class AuthController {
     @GetMapping("/logout")
     public String logout(@RequestParam(name = "uid") int id,
                          HttpServletRequest req) {
-        User user = userMapper.find(id);
+        User user = userMapper.selectByPrimaryKey(id);
         Cookie[] cookies = req.getCookies();
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("token")) {
                 String token = cookie.getValue();
                 if (token.equals(user.getToken())) {
-                    userMapper.dropToken(user.getId());
+                    User dropTokenUser = new User();
+                    dropTokenUser.setToken("");
+                    dropTokenUser.setId(user.getId());
+                    userMapper.updateByPrimaryKeySelective(dropTokenUser);
                     req.getSession().setAttribute("user", null);
                 }
             }

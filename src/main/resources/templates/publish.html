@@ -3,11 +3,11 @@
 <head>
     <title>发起问题 - Awesome Community</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link th:href="@{css/common.css}" rel="stylesheet">
-    <link th:href="@{webjars/bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{webjars/bootstrap/3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet">
-    <script th:src="@{webjars/jquery/3.4.1/jquery.min.js}"></script>
-    <script th:src="@{webjars/bootstrap/3.3.7/js/bootstrap.min.js}" src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"
+    <link th:href="@{/css/common.css}" rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet">
+    <script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}" src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"
             type="text/javascript"></script>
 </head>
 <body>
@@ -19,6 +19,7 @@
             <hr>
             <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
             <form method="post" action="/publish">
+                <input type="hidden" name="id" th:value="${id}">
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）:</label>
                     <input type="text" class="form-control" id="title" name="title" placeholder="问题标题" th:value="${title}">

@@ -2,10 +2,13 @@ package com.arthur.awesome.community.service;
 
 import com.arthur.awesome.community.mapper.UserMapper;
 import com.arthur.awesome.community.model.User;
+import com.arthur.awesome.community.model.UserExample;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Repository
 @Service
@@ -14,18 +17,21 @@ public class UserService {
     UserMapper userMapper;
 
     public void createOrUpdate(User user) {
-        User existUser = userMapper.findByAccountId(String.valueOf(user.getAccountId()));
-        if (existUser == null) {
+        final UserExample example = new UserExample();
+        example.createCriteria()
+                .andAccountIdEqualTo(String.valueOf(user.getAccountId()));
+        final List<User> users = userMapper.selectByExample(example);
+        if (users.size() == 0) {
             user.setGmtCreate(user.getGmtModified());
             userMapper.insert(user);
         } else {
-            // TODO 更新用户信息
-//            userMapper.updateUserToken(token, System.currentTimeMillis(), existUser.getId());
+            User existUser = users.get(0);
             int id = existUser.getId();
             BeanUtils.copyProperties(user, existUser);
-            existUser.setId(id);
-            userMapper.update(existUser);
-            System.out.println("test");
+            final UserExample userExample = new UserExample();
+            userExample.createCriteria()
+                    .andIdEqualTo(id);
+            userMapper.updateByExampleSelective(existUser, userExample);
         }
     }
 }

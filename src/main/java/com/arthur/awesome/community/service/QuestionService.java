@@ -38,7 +38,7 @@ public class QuestionService {
         List<Question> questions = questionMapper.list(offset, pageSize);
         if (questions != null) {
             for (Question question : questions) {
-                final User user = userMapper.find(question.getCreator());
+                final User user = userMapper.selectByPrimaryKey(question.getCreator());
                 final QuestionDTO questionDTO = new QuestionDTO();
                 BeanUtils.copyProperties(question, questionDTO);
                 questionDTO.setUser(user);
@@ -66,7 +66,7 @@ public class QuestionService {
         List<Question> questions = questionMapper.listByUserId(userId, offset, pageSize);
         if (questions != null) {
             for (Question question : questions) {
-                final User user = userMapper.find(question.getCreator());
+                final User user = userMapper.selectByPrimaryKey(question.getCreator());
                 final QuestionDTO questionDTO = new QuestionDTO();
                 BeanUtils.copyProperties(question, questionDTO);
                 questionDTO.setUser(user);
@@ -80,12 +80,29 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
-        Question question = questionMapper.getById(id);
-        final User user = userMapper.find(question.getCreator());
+    public QuestionDTO getByUserIdAndId(Integer userId, Integer id) {
+        Question question = questionMapper.getByUserIdAndId(userId, id);
+        final User user = userMapper.selectByPrimaryKey(question.getCreator());
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public QuestionDTO getById(Integer id) {
+        Question question = questionMapper.getById(id);
+        final User user = userMapper.selectByPrimaryKey(question.getCreator());
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);
+        questionDTO.setUser(user);
+        return questionDTO;
+    }
+
+    public void createOrUpdate(Question question) {
+        if (question.getId() == 0) {
+            questionMapper.insert(question);
+        } else {
+            questionMapper.update(question);
+        }
     }
 }

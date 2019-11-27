@@ -1,14 +1,17 @@
 package com.arthur.awesome.community.controller;
 
+import com.arthur.awesome.community.dto.QuestionDTO;
 import com.arthur.awesome.community.mapper.QuestionMapper;
 import com.arthur.awesome.community.mapper.UserMapper;
 import com.arthur.awesome.community.model.Question;
 import com.arthur.awesome.community.model.User;
+import com.arthur.awesome.community.service.QuestionService;
 import com.sun.deploy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,13 +27,37 @@ public class PublishController {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    QuestionService questionService;
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable int id,
+                       HttpServletRequest req,
+                       Model model) {
+        User user = (User) req.getSession().getAttribute("user");
+        if (user == null) {
+            return "redirect:/";
+        }
+        QuestionDTO question = questionService.getByUserIdAndId(user.getId(), id);
+        if (question == null) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("id", question.getId());
+        model.addAttribute("title", question.getTitle());
+        model.addAttribute("description", question.getDescription());
+        model.addAttribute("tag", question.getTag());
+        return "publish";
+    }
+
     @GetMapping("/publish")
     public String publish() {
         return "publish";
     }
 
     @PostMapping("/publish")
-    public String doPublish(@RequestParam("title") String title,
+    public String doPublish(@RequestParam("id") Integer id,
+                            @RequestParam("title") String title,
                             @RequestParam("description") String description,
                             @RequestParam("tag") String tag,
                             HttpServletRequest req,
@@ -60,14 +87,19 @@ public class PublishController {
             return "publish";
         }
 
-        final Question question = new Question();
+        Question question = new Question();
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        questionMapper.insert(question);
+        question.setGmtModified(System.currentTimeMillis());
+
+        if (id != null) {
+            question.setId(id);
+        } else {
+            question.setGmtCreate(question.getGmtModified());
+        }
+        questionService.createOrUpdate(question);
         return "redirect:/";
     }
 }
