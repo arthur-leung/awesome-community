@@ -2,6 +2,9 @@ package com.arthur.awesome.community.service;
 
 import com.arthur.awesome.community.dto.PaginationDTO;
 import com.arthur.awesome.community.dto.QuestionDTO;
+import com.arthur.awesome.community.exception.CustomizeErrorCode;
+import com.arthur.awesome.community.exception.CustomizeException;
+import com.arthur.awesome.community.mapper.QuestionExtMapper;
 import com.arthur.awesome.community.mapper.QuestionMapper;
 import com.arthur.awesome.community.mapper.UserMapper;
 import com.arthur.awesome.community.model.Question;
@@ -22,6 +25,9 @@ public class QuestionService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
 
     public PaginationDTO list(int page, int pageSize) {
@@ -102,6 +108,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Integer id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         final User user = userMapper.selectByPrimaryKey(question.getCreator());
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
@@ -115,5 +124,18 @@ public class QuestionService {
         } else {
             questionMapper.updateByPrimaryKeySelective(question);
         }
+    }
+
+    public void incView(Integer id) {
+       /* final Question question = questionMapper.selectByPrimaryKey(id);
+        Question updateQuestion = new Question();
+        BeanUtils.copyProperties(question, updateQuestion);
+        updateQuestion.setViewCount(question.getViewCount() + 1);
+        questionMapper.updateByPrimaryKey(updateQuestion);*/
+        Question updateQuestion = new Question();
+        updateQuestion.setId(id);
+        updateQuestion.setViewCount(1);
+
+        questionExtMapper.incViewCount(updateQuestion);
     }
 }
