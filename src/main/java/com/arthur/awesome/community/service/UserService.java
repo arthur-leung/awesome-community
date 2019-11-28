@@ -28,10 +28,8 @@ public class UserService {
             User existUser = users.get(0);
             int id = existUser.getId();
             BeanUtils.copyProperties(user, existUser);
-            final UserExample userExample = new UserExample();
-            userExample.createCriteria()
-                    .andIdEqualTo(id);
-            userMapper.updateByExampleSelective(existUser, userExample);
+            existUser.setId(id);
+            userMapper.updateByPrimaryKeySelective(existUser);
         }
     }
 }
