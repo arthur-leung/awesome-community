@@ -29,7 +29,7 @@ public class PublishController {
     QuestionService questionService;
 
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable int id,
+    public String edit(@PathVariable Long id,
                        HttpServletRequest req,
                        Model model) {
         User user = (User) req.getSession().getAttribute("user");
@@ -54,7 +54,7 @@ public class PublishController {
     }
 
     @PostMapping("/publish")
-    public String doPublish(@RequestParam("id") Integer id,
+    public String doPublish(@RequestParam("id") Long id,
                             @RequestParam("title") String title,
                             @RequestParam("description") String description,
                             @RequestParam("tag") String tag,

@@ -92,7 +92,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getByUserIdAndId(Integer userId, Integer id) {
+    public QuestionDTO getByUserIdAndId(Integer userId, Long id) {
         final QuestionExample example = new QuestionExample();
         example.createCriteria()
                 .andCreatorEqualTo(userId)
@@ -106,7 +106,7 @@ public class QuestionService {
         return questionDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
         if (question == null) {
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
@@ -126,7 +126,7 @@ public class QuestionService {
         }
     }
 
-    public void incView(Integer id) {
+    public void incView(Long id) {
        /* final Question question = questionMapper.selectByPrimaryKey(id);
         Question updateQuestion = new Question();
         BeanUtils.copyProperties(question, updateQuestion);
