@@ -33,5 +33,6 @@
 
         <table tableName="user"></table>
         <table tableName="question"></table>
+        <table tableName="comment"></table>
     </context>
 </generatorConfiguration>
